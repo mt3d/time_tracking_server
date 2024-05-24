@@ -11,6 +11,9 @@ app.use(bodyParser.json());
 
 app.post("/users", api.createUser);
 
+app.use(middleware.handleError);
+app.use(middleware.notFound);
+
 app.listen(app.get("port"), () => {
     console.log(`Listening at: http://localhost:${app.get("port")}`);
 });
