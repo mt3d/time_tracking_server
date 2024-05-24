@@ -1,6 +1,7 @@
 import cuid from "cuid";
 import bcrypt from "bcrypt";
-import { isEmail, isAlphanumeric } from "validator";
+import validator from "validator";
+const { isEmail, isAlphanumeric } = validator;
 import db from "../db.mjs";
 
 const SALT_ROUNDS = 15;
@@ -33,21 +34,31 @@ function usernameSchema() {
     }
 }
 
+function emailSchema(opts) {
+    const { required } = opts;
+
+    return {
+        type: String,
+        required: !!required,
+        validate: { validator: isEmail, message: props => "Email is not valid" }
+    }
+}
+
 async function isUnique(doc, username) {
     const existing = await get(username);
     return !existing || doc._id === existing._id;
 }
 
-async function get(username) {
+export async function get(username) {
     const user = await User.findOne({ username });
     return user;
 }
 
-async function remove(username) {
+export async function remove(username) {
     await User.deleteOne({ username });
 }
 
-async function create(fields) {
+export async function create(fields) {
     const user = new User(fields);
     await hashPassword(user);
     await user.save();
