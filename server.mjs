@@ -15,6 +15,10 @@ app.post("/signup", api.createUser);
 
 app.get("/timers", ensureUser, api.listTimers);
 app.post("/timers", ensureUser, api.createTimer);
+app.put("/timers:id", ensureUser, api.editTimer);
+app.delete("/timers:id", ensureUser, api.removeTimer);
+app.post("/timers/start:id", ensureUser, api.startTimer);
+app.post("/timers/stop:id", ensureUser, api.stopTimer);
 
 app.use(middleware.handleError);
 app.use(middleware.notFound);

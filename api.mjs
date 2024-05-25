@@ -36,3 +36,28 @@ export async function listTimers(request, response, next) {
     const timers = await Timers.list(user_id);
     response.json(timers);
 }
+
+export async function editTimer(request, response, next) {
+    const change = request.body;
+    const timer = await Timers.edit(request.params.id, change);
+
+    response.json({}); // all timers?
+}
+
+export async function removeTimer(request, response, next) {
+    await Timers.remove(request.params.id);
+
+    response.json({success: true});
+}
+
+export async function startTimer(request, response, next) {
+    Timers.start(request.params.id, request.body.start);
+
+    response.json({});
+}
+
+export async function stopTimer(request, response, next) {
+    Timers.stop(request.params.id, request.body.stop);
+
+    response.json({});
+}

@@ -32,3 +32,36 @@ export async function list(user_id) {
 
     return timers;
 }
+
+export async function edit(id, change) {
+    const timer = await get(id);
+
+    Object.keys(change).forEach(function (key){
+        timer[key] = change[key];
+    });
+
+    await timer.save();
+    return timer;
+}
+
+export async function remove(id) {
+    await Timer.deleteOne({ id });
+}
+
+export async function start(id, startTime) {
+    const timer = await get(id);
+    timer.runningSince = startTime;
+    await timer.save();
+
+    return timer;
+}
+
+export async function stop(id, stopTime) {
+    const timer = await get(id);
+    const delta = stopTime - timer.runningSince;
+    timer.elapsed += delta;
+    timer.runningSince = null;
+    await timer.save();
+
+    return timer;
+}
