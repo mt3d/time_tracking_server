@@ -11,7 +11,7 @@ passport.use(userStrategy());
 export const authenticate = passport.authenticate("local", { session: false });
 
 export async function login(request, response, next) {
-    const token = await sign({ username: request.user.username });
+    const token = await sign({ user_id: request.user.user_id });
     response.cookie("jwt", token, { httpOnly: true });
     response.json({ success: true, token: token });
 }
@@ -25,7 +25,7 @@ export async function ensureUser(request, response, next) {
     const jwtString = request.headers.authorization || request.cookies.jwt;
     const payload = await verify(jwtString);
 
-    if (payload.username) {
+    if (payload.user_id) {
         request.user = payload;
         return next();
     }
@@ -59,7 +59,7 @@ function userStrategy() {
             const isUser = await bcrypt.compare(password, user.password);
 
             if (isUser) {
-                return callback(null, { username: user.username });
+                return callback(null, { user_id: user._id });
             }
         } catch (error) {}
 
